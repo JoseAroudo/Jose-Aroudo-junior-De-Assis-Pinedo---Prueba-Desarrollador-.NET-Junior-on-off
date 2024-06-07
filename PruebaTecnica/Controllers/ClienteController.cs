@@ -25,6 +25,11 @@ namespace PruebaTecnica.Controllers
                 return BadRequest("Faltan datos");
             }
 
+            var sorteo = new Sorteo
+            {
+                idSorteo = idSorteo,
+                numeroSorteo = new Random().Next(0, 99999)//Escoge un numero random entre 0 y 99999 que es el requerimiento numero 1
+            };
 
             var usuario = new Usuario
             {
@@ -32,16 +37,25 @@ namespace PruebaTecnica.Controllers
                 idCliente = idCliente,
                 idSorteo = idSorteo,
                 nombreUsuario = nombreUsuario,
-                fechaNacimiento = DateTime.Now,//valores de los datos que se envian del usuario, falta enviar el numero de sorte
+                fechaNacimiento = DateTime.Now,
+                sorteo = sorteo//valores de los datos que se envian del usuario, falta enviar el numero de sorte
                 //que está en la tabla Sorteo, y el atributo se llama numeroSorteo
                 
             };
 
-            var sorteo = new Sorteo
+              
+
+            var sorteosBd = _context.Sorteos.ToList();//Obtiene el numero de sorteo
+
+            var sorteoExistente = sorteosBd.Where(x => x.numeroSorteo == sorteo.numeroSorteo).FirstOrDefault();//Busca si el numero de sorteo ya existe en la base de datos
+
+            if (sorteoExistente!=null)
             {
-                idSorteo = idSorteo,
-                numeroSorteo = new Random().Next(0, 99999)//Escoge un numero random entre 0 y 99999 que es el requerimiento numero 1
-            };
+                sorteo.numeroSorteo = new Random().Next(0, 99999);//Escoge un numero random entre 0 y 99999 que es el requerimiento numero 1
+            }
+
+            
+                //Busca si el numero de sorteo ya existe en la base de datos
 
             var cliente = new Cliente//Valores del cliente
             {
